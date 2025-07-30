@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muhammad Asif – Graphic Designer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scroll due to animations */
+            overflow-y: auto; /* Allow vertical scrolling */
+            background-color: #F3F4F6; /* Light gray background for the overall page */
+            cursor: crosshair; /* Custom cursor like a design tool */
+        }
+
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Subtle page transition (fade-in) */
+        .page-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .page-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero section specific animations */
+        .hero-headline, .hero-tagline, .hero-cta-group, .hero-sub-text {
+            opacity: 0;
+            transform: translateY(20px);
+            animation-fill-mode: forwards;
+        }
+        .hero-sub-text { animation: slideInFade 1s ease-out forwards; }
+        .hero-headline { animation: slideInFade 1s ease-out forwards 0.2s; }
+        .hero-tagline { animation: slideInFade 1s ease-out forwards 0.4s; }
+        .hero-cta-group { animation: slideInFade 1s ease-out forwards 0.6s; }
+        .hero-bottom-info { animation: slideInFade 1s ease-out forwards 0.8s; }
+
+
+        @keyframes slideInFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Custom modal for alerts */
+        .custom-modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .custom-modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+        }
+
+        .custom-modal-close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .custom-modal-close-btn:hover,
+        .custom-modal-close-btn:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Testimonial carousel styles */
+        .testimonial-item {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+        .testimonial-item.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Floating Ball Motion Graphic */
+        .floating-ball {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1); /* Transparent white */
+            border-radius: 50%;
+            filter: blur(10px); /* Soft blur effect */
+            animation: floatAndScale 15s infinite ease-in-out alternate;
+            z-index: 0; /* Behind content */
+        }
+
+        /* Define different sizes and positions for multiple balls */
+        .ball-1 { width: 150px; height: 150px; top: 10%; left: 5%; animation-delay: 0s; }
+        .ball-2 { width: 100px; height: 100px; bottom: 20%; right: 15%; animation-delay: 3s; }
+        .ball-3 { width: 80px; height: 80px; top: 30%; right: 10%; animation-delay: 6s; }
+        .ball-4 { width: 120px; height: 120px; bottom: 5%; left: 20%; animation-delay: 9s; }
+
+        @keyframes floatAndScale {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+            25% { transform: translate(20px, -15px) scale(1.05); opacity: 0.15; }
+            50% { transform: translate(0, 20px) scale(0.95); opacity: 0.1; }
+            75% { transform: translate(-25px, -10px) scale(1.03); opacity: 0.12; }
+            100% { transform: translate(0, 0) scale(1); opacity: 0.1; }
+        }
+    </style>
+    <!-- Custom modal for project details -->
+    <div id="projectDetailModal" class="custom-modal">
+        <!-- Content will be loaded dynamically by JavaScript -->
+    </div>
+</head>
+<body class="text-gray-800">
+
+    <!-- Custom Modal for Messages -->
+    <div id="customModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <span class="custom-modal-close-btn" onclick="closeModal()">&times;</span>
+            <p id="modalMessage" class="text-lg font-medium text-gray-700"></p>
+            <button onclick="closeModal()" class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition duration-300 ease-in-out">OK</button>
+        </div>
+    </div>
+
+    <!-- Main Container to apply rounded corners to the whole layout -->
+    <div class="max-w-7xl mx-auto my-8 bg-white rounded-3xl shadow-xl overflow-hidden">
+
+        <!-- Navigation -->
+        <nav class="relative z-50 py-4 px-6 md:px-12">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="#hero" class="text-2xl font-extrabold text-gray-900">Muhammad Asif</a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#hero" class="text-gray-600 hover:text-gray-900 transition duration-300 font-medium">Home</a>
+                    <a href="#portfolio" class="text-gray-600 hover:text-gray-900 transition duration-300 font-medium">Features <span class="ml-1 text-xs">&#9660;</span></a>
+                    <a href="#services" class="text-gray-600 hover:text-gray-900 transition duration-300 font-medium">Services <span class="ml-1 text-xs">&#9660;</span></a>
+                    <a href="#about" class="text-gray-600 hover:text-gray-900 transition duration-300 font-medium">Pricing</a>
+                    <a href="#contact" class="text-gray-600 hover:text-gray-900 transition duration-300 font-medium">API</a>
+                    <!-- Removed Log In and Sign Up -->
+                </div>
+                <button id="mobileMenuButton" class="md:hidden text-gray-600 hover:text-gray-900 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="md:hidden hidden bg-white py-2 mt-2 rounded-lg shadow-lg">
+                <a href="#hero" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition duration-300" onclick="toggleMobileMenu()">Home</a>
+                <a href="#portfolio" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition duration-300" onclick="toggleMobileMenu()">Features</a>
+                <a href="#services" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition duration-300" onclick="toggleMobileMenu()">Services</a>
+                <a href="#about" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition duration-300" onclick="toggleMobileMenu()">Pricing</a>
+                <a href="#contact" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition duration-300" onclick="toggleMobileMenu()">API</a>
+                <!-- Removed Log In and Sign Up from mobile menu -->
+            </div>
+        </nav>
+
+        <main>
+            <!-- Hero Section -->
+            <section id="hero" class="relative min-h-[600px] flex flex-col items-center justify-center text-center px-6 py-20
+                                      bg-gradient-to-r from-purple-100 via-indigo-100 to-yellow-100 rounded-b-3xl overflow-hidden md:min-h-screen">
+                <!-- Floating Balls Motion Graphic -->
+                <div class="floating-ball ball-1"></div>
+                <div class="floating-ball ball-2"></div>
+                <div class="floating-ball ball-3"></div>
+                <div class="floating-ball ball-4"></div>
+
+                <div class="relative z-10 max-w-4xl mx-auto">
+                    <p class="hero-sub-text text-sm text-gray-700 font-medium mb-4 px-4 py-2 bg-white bg-opacity-70 rounded-full inline-block shadow-sm">
+                        Meaningful Design for a Digital World
+                    </p>
+                    <h1 class="hero-headline text-4xl md:text-6xl lg:text-7xl font-extrabold text-gray-900 leading-tight mb-4">
+                        Muhammad Asif <br>Graphic Designer
+                    </h1>
+                    <p class="hero-tagline text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                        Crafting impactful visuals for social media, digital marketing, education, and tech.
+                    </p>
+                    <div class="hero-cta-group flex flex-col sm:flex-row justify-center items-center gap-4 mb-16">
+                        <a href="#portfolio" class="inline-block px-8 py-4 bg-yellow-400 text-gray-900 text-lg font-semibold rounded-full shadow-lg hover:bg-yellow-500 transition duration-300 ease-in-out transform hover:scale-105">
+                            Explore My Work 
+                        </a>
+                        <a href="#" class="inline-flex items-center px-8 py-4 bg-white text-gray-800 text-lg font-medium rounded-full shadow-lg hover:bg-gray-100 transition duration-300 ease-in-out transform hover:scale-105">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"></path></svg>
+                            View Portfolio 
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bottom info section as seen in the image -->
+                <div class="hero-bottom-info absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-3xl flex flex-col md:flex-row items-center justify-center gap-4 text-center text-gray-700">
+                    <div class="flex items-center justify-center flex-1">
+                        <p class="font-medium">Specializing in purposeful design that drives understanding and action.</p>
+                    </div>
+                    <div class="hidden md:block w-px h-8 bg-gray-300 mx-4"></div> <!-- Vertical separator -->
+                    <div class="flex-1">
+                        <p class="font-medium">Canva Creator &rarr;</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Me/Us Section -->
+            <section id="about" class="page-section py-20 bg-white px-6 md:px-12">
+                <div class="container mx-auto max-w-5xl">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">About Me</h2>
+                    <div class="flex flex-col md:flex-row items-center gap-12">
+                        <div class="md:w-1/3 flex justify-center">
+                            <img src="https://placehold.co/300x300/E0E7FF/4F46E5?text=Your+Photo" alt="Professional Headshot" class="rounded-3xl w-64 h-64 object-cover shadow-xl border-4 border-indigo-200 animate-fade-in-up">
+                        </div>
+                        <div class="md:w-2/3 text-lg text-gray-700 leading-relaxed">
+                            <p class="mb-6 animate-fade-in-up" style="animation-delay: 0.2s;">
+                                Hello! I'm **Muhammad Asif**, a graphic designer who believes in the power of **purposeful design**. My expertise lies in developing visually engaging and strategically sound designs across crucial digital landscapes, including **social media, digital marketing, education, and the tech sector**.
+                            </p>
+                            <p class="mb-6 animate-fade-in-up" style="animation-delay: 0.4s;">
+                                I approach each project with a commitment to **minimalist sophistication and modern innovation**, ensuring that every design not only captures attention but also drives understanding and action. My process involves deep dives into understanding target audiences, meticulous attention to detail, and a commitment to transforming complex ideas into clear, compelling visual narratives.
+                            </p>
+                            <p class="animate-fade-in-up" style="animation-delay: 0.6s;">
+                                Beyond client work, I am channeling my passion into becoming a **Canva Creator**, with the goal of expanding the reach of thoughtful, effective design by offering versatile and easy-to-use templates to a wider creative community.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Portfolio/Work Section -->
+            <section id="portfolio" class="page-section py-20 bg-gray-50 px-6 md:px-12">
+                <div class="container mx-auto max-w-6xl">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">My Work</h2>
+
+                    <!-- Category Filter -->
+                    <div class="flex flex-wrap justify-center gap-4 mb-12 animate-fade-in-up">
+                        <button class="portfolio-filter-btn px-6 py-2 rounded-full border border-indigo-300 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition duration-300 font-medium active-filter" data-category="all">All</button>
+                        <button class="portfolio-filter-btn px-6 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition duration-300 font-medium" data-category="social-media">Social Media</button>
+                        <button class="portfolio-filter-btn px-6 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition duration-300 font-medium" data-category="digital-marketing">Digital Marketing</button>
+                        <button class="portfolio-filter-btn px-6 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition duration-300 font-medium" data-category="education">Education</button>
+                        <button class="portfolio-filter-btn px-6 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-100 transition duration-300 font-medium" data-category="tech-ui-ux">Tech & UI/UX</button>
+                    </div>
+
+                    <!-- Project Grid -->
+                    <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Project 1 -->
+                        <div class="portfolio-item bg-white rounded-3xl shadow-lg overflow-hidden group animate-fade-in-up" data-category="social-media" onclick="showProjectDetails('project1')">
+                            <img src="https://placehold.co/600x400/D1D5DB/4B5563?text=Social+Media+Campaign" alt="Project Thumbnail" class="w-full h-48 object-cover transition duration-300 group-hover:scale-105">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Urban Oasis Social Campaign</h3>
+                                <p class="text-gray-600 text-sm">Client: Green Living Co.</p>
+                                <button class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium transition duration-300" onclick="showProjectDetails('project1')">View Details &rarr;</button>
+                            </div>
+                        </div>
+                        <!-- Project 2 - Digital Marketing -->
+                        <div class="portfolio-item bg-white rounded-3xl shadow-lg overflow-hidden group animate-fade-in-up" data-category="digital-marketing">
+                            <img src="https://placehold.co/600x400/D1D5DB/4B5563?text=Digital+Marketing+Ad" alt="Project Thumbnail" class="w-full h-48 object-cover transition duration-300 group-hover:scale-105">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">InnovateTech Digital Ads</h3>
+                                <p class="text-gray-600 text-sm">Client: InnovateTech Solutions</p>
+                                <button class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium transition duration-300" onclick="showProjectDetails('project2')">View Details &rarr;</button>
+                            </div>
+                        </div>
+                        <!-- Project 3 - Education -->
+                        <div class="portfolio-item bg-white rounded-3xl shadow-lg overflow-hidden group animate-fade-in-up" data-category="education">
+                            <img src="https://placehold.co/600x400/D1D5DB/4B5563?text=Educational+Infographic" alt="Project Thumbnail" class="w-full h-48 object-cover transition duration-300 group-hover:scale-105">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Future Scholars Infographics</h3>
+                                <p class="text-gray-600 text-sm">Client: Global Education Foundation</p>
+                                <button class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium transition duration-300" onclick="showProjectDetails('project3')">View Details &rarr;</button>
+                            </div>
+                        </div>
+                        <!-- Project 4 - Tech & UI/UX -->
+                        <div class="portfolio-item bg-white rounded-3xl shadow-lg overflow-hidden group animate-fade-in-up" data-category="tech-ui-ux">
+                            <img src="https://placehold.co/600x400/D1D5DB/4B5563?text=Tech+App+UI" alt="Project Thumbnail" class="w-full h-48 object-cover transition duration-300 group-hover:scale-105">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Synergy App UI/UX</h3>
+                                <p class="text-gray-600 text-sm">Client: Synergy Innovations</p>
+                                <button class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium transition duration-300" onclick="showProjectDetails('project4')">View Details &rarr;</button>
+                            </div>
+                        </div>
+                        <!-- Project 5 - Social Media -->
+                        <div class="portfolio-item bg-white rounded-3xl shadow-lg overflow-hidden group animate-fade-in-up" data-category="social-media">
+                            <img src="https://placehold.co/600x400/D1D5DB/4B5563?text=Brand+Identity+Social" alt="Project Thumbnail" class="w-full h-48 object-cover transition duration-300 group-hover:scale-105">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">Cafe Blossom Brand Refresh</h3>
+                                <p class="text-gray-600 text-sm">Client: Cafe Blossom</p>
+                                <button class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium transition duration-300" onclick="showProjectDetails('project5')">View Details &rarr;</button>
+                            </div>
+                        </div>
+                        <!-- Project 6 - Digital Marketing -->
+                        <div class="portfolio-item bg-white rounded-3xl shadow-lg overflow-hidden group animate-fade-in-up" data-category="digital-marketing">
+                            <img src="https://placehold.co/600x400/D1D5DB/4B5563?text=E-commerce+Campaign" alt="Project Thumbnail" class="w-full h-48 object-cover transition duration-300 group-hover:scale-105">
+                            <div class="p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">EcoWear E-commerce Campaign</h3>
+                                <p class="text-gray-600 text-sm">Client: EcoWear Apparel</p>
+                                <button class="mt-4 text-indigo-600 hover:text-indigo-800 font-medium transition duration-300" onclick="showProjectDetails('project6')">View Details &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services Section -->
+            <section id="services" class="page-section py-20 bg-white px-6 md:px-12">
+                <div class="container mx-auto max-w-5xl">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">My Services</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Service 1 -->
+                        <div class="bg-indigo-50 p-8 rounded-3xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 animate-fade-in-up">
+                            <div class="text-indigo-600 mb-4">
+                                <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 text-center mb-4">Social Media Content Creation</h3>
+                            <p class="text-gray-700 text-center">Engaging graphics, animations, and templates for all your social platforms.</p>
+                        </div>
+                        <!-- Service 2 -->
+                        <div class="bg-indigo-50 p-8 rounded-3xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 animate-fade-in-up" style="animation-delay: 0.2s;">
+                            <div class="text-indigo-600 mb-4">
+                                <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-1.25-3M15 10V6a3 3 0 00-3-3 3 3 0 00-3 3v4m5 4h2a2 2 0 002-2v-2a2 2 0 00-2-2H7a2 2 0 00-2 2v2a2 2 0 002 2h2"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 text-center mb-4">Digital Ad Design</h3>
+                            <p class="text-gray-700 text-center">Compelling visuals optimized for various digital marketing campaigns.</p>
+                        </div>
+                        <!-- Service 3 -->
+                        <div class="bg-indigo-50 p-8 rounded-3xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 animate-fade-in-up" style="animation-delay: 0.4s;">
+                            <div class="text-indigo-600 mb-4">
+                                <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 text-center mb-4">Educational Infographics</h3>
+                            <p class="text-gray-700 text-center">Clear and engaging visual explanations for complex educational topics.</p>
+                        </div>
+                        <!-- Service 4 -->
+                        <div class="bg-indigo-50 p-8 rounded-3xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 animate-fade-in-up" style="animation-delay: 0.6s;">
+                            <div class="text-indigo-600 mb-4">
+                                <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-1.25-3M15 10V6a3 3 0 00-3-3 3 3 0 00-3 3v4m5 4h2a2 2 0 002-2v-2a2 2 0 00-2-2H7a2 2 0 00-2 2v2a2 2 0 002 2h2"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 text-center mb-4">UI/UX for Tech Startups</h3>
+                            <p class="text-gray-700 text-center">Intuitive and user-friendly interface designs for web and mobile applications.</p>
+                        </div>
+                        <!-- Service 5 -->
+                        <div class="bg-indigo-50 p-8 rounded-3xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 animate-fade-in-up" style="animation-delay: 0.8s;">
+                            <div class="text-indigo-600 mb-4">
+                                <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 text-center mb-4">Brand Identity & Logo Design</h3>
+                            <p class="text-gray-700 text-center">Crafting unique and memorable brand identities that stand out.</p>
+                        </div>
+                        <!-- Service 6 -->
+                        <div class="bg-indigo-50 p-8 rounded-3xl shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1 animate-fade-in-up" style="animation-delay: 1s;">
+                            <div class="text-indigo-600 mb-4">
+                                <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V4m0 8v4m-6 0h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 text-center mb-4">Print & Editorial Design</h3>
+                            <p class="text-gray-700 text-center">Brochures, reports, and other print materials with a modern touch.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testimonials Section -->
+            <section id="testimonials" class="page-section py-20 bg-gray-50 px-6 md:px-12">
+                <div class="container mx-auto max-w-4xl text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12">Client Raves</h2>
+                    <div class="relative overflow-hidden h-48 flex items-center justify-center">
+                        <div id="testimonialCarousel" class="w-full">
+                            <!-- Testimonial 1 -->
+                            <div class="testimonial-item active px-4">
+                                <p class="text-xl italic text-gray-700 mb-6">"Working with Muhammad Asif was a game-changer for our social media presence. Their designs are not only beautiful but truly capture our brand's essence!"</p>
+                                <p class="font-semibold text-gray-800">- Jane Doe, Marketing Director at InnovateCorp</p>
+                            </div>
+                            <!-- Testimonial 2 -->
+                            <div class="testimonial-item px-4">
+                                <p class="text-xl italic text-gray-700 mb-6">"Muhammad Asif transformed our complex data into stunning, easy-to-understand infographics. Highly recommend for educational content!"</p>
+                                <p class="font-semibold text-gray-800">- John Smith, CEO of EduTech Solutions</p>
+                            </div>
+                            <!-- Testimonial 3 -->
+                            <div class="testimonial-item px-4">
+                                <p class="text-xl italic text-gray-700 mb-6">"The UI/UX design for our new app was flawless. Muhammad Asif has an incredible eye for detail and user experience."</p>
+                                <p class="font-semibold text-gray-800">- Emily White, Founder of Synergy Innovations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="page-section py-20 bg-white px-6 md:px-12">
+                <div class="container mx-auto max-w-3xl">
+                    <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">Get in Touch</h2>
+                    <form id="contactForm" class="bg-gray-50 p-8 rounded-3xl shadow-lg animate-fade-in-up">
+                        <div class="mb-6">
+                            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                            <input type="text" id="name" name="name" class="shadow appearance-none border rounded-xl w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Your Name" required>
+                        </div>
+                        <div class="mb-6">
+                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                            <input type="email" id="email" name="email" class="shadow appearance-none border rounded-xl w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="your@email.com" required>
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+                            <textarea id="message" name="message" rows="6" class="shadow appearance-none border rounded-xl w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-400" placeholder="Tell me about your project..." required></textarea>
+                        </div>
+                        <div class="flex justify-center">
+                            <button type="submit" class="px-8 py-4 bg-indigo-600 text-white text-lg font-medium rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-12">
+                        <p class="text-lg text-gray-700 mb-4">
+                            Prefer to email directly? <a href="mailto:hello@yourdomain.com" class="text-indigo-600 hover:underline">hello@yourdomain.com</a>
+                        </p>
+                        <div class="flex justify-center space-x-6">
+                            <!-- LinkedIn -->
+                            <a href="https://linkedin.com/in/yourprofile" target="_blank" class="text-gray-600 hover:text-indigo-600 transition duration-300 transform hover:scale-110">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.381 1.11-2.5 2.48-2.5s2.48 1.119 2.48 2.5zM.02 24h4.96v-16h-4.96v16zM24 11.02c0-2.846-1.574-4.524-4.043-4.524-2.31 0-3.447 1.294-4.043 2.277v-1.953h-4.96v16h4.96v-8.75c0-1.84 1.018-2.736 2.48-2.736 1.462 0 2.48 1.096 2.48 2.736v8.75h4.96v-9.25z"/></svg>
+                            </a>
+                            <!-- Behance -->
+                            <a href="https://behance.net/yourprofile" target="_blank" class="text-gray-600 hover:text-indigo-600 transition duration-300 transform hover:scale-110">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6.5 17.5h-4.2c-.3 0-.5-.1-.6-.4l-1.5-3.5h-2.2l-1.5 3.5c-.1.3-.3.4-.6.4h-4.2c-.4 0-.6-.3-.5-.7l4.5-10.5c.1-.3.3-.4.6-.4h1.8c.3 0 .5.1.6.4l4.5 10.5c.1.4-.1.7-.5.7zM12 7.7L9.5 14h5L12 7.7z"/></svg>
+                            </a>
+                            <!-- Dribbble -->
+                            <a href="https://dribbble.com/yourprofile" target="_blank" class="text-gray-600 hover:text-indigo-600 transition duration-300 transform hover:scale-110">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm8.25 10.5c-.1.7-.5 1.3-1.1 1.7-.6.4-1.3.6-2.1.6-1.4 0-2.5-.5-3.3-1.5-.8-1-1.2-2.3-1.2-3.9 0-1.6.4-2.9 1.2-3.9.8-1 1.9-1.5 3.3-1.5 1.4 0 2.5.5 3.3 1.5.8 1 1.2 2.3 1.2 3.9 0 1.6-.4 2.9-1.2 3.9zM7.5 16c-.1.7-.5 1.3-1.1 1.7-.6.4-1.3.6-2.1.6-1.4 0-2.5-.5-3.3-1.5-.8-1-1.2-2.3-1.2-3.9 0-1.6.4-2.9 1.2-3.9.8-1 1.9-1.5 3.3-1.5 1.4 0 2.5.5 3.3 1.5.8 1 1.2 2.3 1.2 3.9 0 1.6-.4 2.9-1.2 3.9z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-gray-800 text-white py-8 text-center rounded-b-3xl">
+            <div class="container mx-auto px-6">
+                <p>&copy; 2024 Muhammad Asif. All rights reserved.</p>
+                <p class="text-sm mt-2">Crafted with passion for meaningful design.</p>
+            </div>
+        </footer>
+    </div> <!-- End of main container -->
+
+    <script>
+        // Custom modal functions
+        function showModal(message) {
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('customModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+        // Custom modal for project details
+        function showProjectDetailsModal(projectId) {
+            const project = projectData[projectId];
+            if (!project) return;
+
+            const modalContent = `
+                <div class="custom-modal-content max-w-2xl">
+                    <span class="custom-modal-close-btn" onclick="closeProjectDetails()">&times;</span>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4" id="projectTitle">${project.title}</h3>
+                    <p class="text-gray-600 mb-4" id="projectClient">Client: ${project.client}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" id="projectVisuals">
+                        ${project.visuals.map(src => `<img src="${src}" alt="${project.title}" class="w-full h-auto rounded-lg shadow-md">`).join('')}
+                    </div>
+                    <p class="text-gray-700 mb-4 text-left" id="projectDescription">${project.description}</p>
+                    ${project.process ? `<div class="mb-4 text-left" id="projectProcess"><h4 class="font-semibold text-gray-800 mb-2">Process:</h4><p id="processContent">${project.process}</p></div>` : ''}
+                    ${project.testimonial ? `<div class="mb-4 text-left" id="projectTestimonials"><h4 class="font-semibold text-gray-800 mb-2">Client Testimonial:</h4><p class="italic" id="testimonialContent">"${project.testimonial}"</p></div>` : ''}
+                </div>
+            `;
+            document.getElementById('projectDetailModal').innerHTML = modalContent;
+            document.getElementById('customModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').style.display = 'none';
+        }
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        mobileMenuButton.addEventListener('click', toggleMobileMenu);
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Scroll-triggered animations using Intersection Observer
+        const sections = document.querySelectorAll('.page-section');
+        const animateOnScroll = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Only unobserve if it's not the hero section, as hero animations are on load
+                    if (entry.target.id !== 'hero') {
+                        observer.unobserve(entry.target);
+                    }
+                }
+            });
+        };
+
+        const sectionObserver = new IntersectionObserver(animateOnScroll, {
+            root: null, // viewport
+            rootMargin: '0px',
+            threshold: 0.1 // Trigger when 10% of the section is visible
+        });
+
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+
+        // Portfolio filter functionality
+        const filterButtons = document.querySelectorAll('.portfolio-filter-btn');
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active-filter', 'bg-indigo-50', 'border-indigo-300', 'text-indigo-600'));
+                filterButtons.forEach(btn => btn.classList.add('border-gray-300', 'text-gray-700', 'hover:bg-gray-100'));
+
+                // Add active class to clicked button
+                button.classList.add('active-filter', 'bg-indigo-50', 'border-indigo-300', 'text-indigo-600');
+                button.classList.remove('border-gray-300', 'text-gray-700', 'hover:bg-gray-100');
+
+                const category = button.dataset.category;
+
+                portfolioItems.forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block'; // Show item
+                        item.classList.add('animate-fade-in-up'); // Re-apply animation for smooth transition
+                        item.classList.remove('hidden'); // Ensure it's not hidden by Tailwind
+                    } else {
+                        item.style.display = 'none'; // Hide item
+                        item.classList.remove('animate-fade-in-up');
+                    }
+                });
+            });
+        });
+
+        // Project Details Modal
+        const projectDetailModal = document.getElementById('projectDetailModal');
+        const projectTitle = document.getElementById('projectTitle');
+        const projectClient = document.getElementById('projectClient');
+        const projectVisuals = document.getElementById('projectVisuals');
+        const projectDescription = document.getElementById('projectDescription');
+        const projectProcess = document.getElementById('projectProcess');
+        const processContent = document.getElementById('processContent');
+        const projectTestimonials = document.getElementById('projectTestimonials');
+        const testimonialContent = document.getElementById('testimonialContent');
+
+        const projectData = {
+            'project1': {
+                title: 'Urban Oasis Social Campaign',
+                client: 'Green Living Co.',
+                description: 'Designed a vibrant and engaging social media campaign to promote sustainable living products. Focused on creating visually appealing graphics that resonated with an eco-conscious audience across Instagram, Facebook, and Pinterest. Key elements included custom illustrations, animated stories, and interactive polls. This project aimed to increase brand awareness and drive engagement for a new line of eco-friendly home goods.',
+                visuals: [
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Social+Mockup+1',
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Social+Mockup+2'
+                ],
+                process: 'The process involved initial research into current social media trends and competitor analysis. Mood boards were created to define the visual style, followed by wireframing for story layouts. Iterative design and client feedback ensured the final assets were impactful and aligned with brand guidelines.',
+                testimonial: '"Muhammad Asif truly understood our vision and brought it to life with stunning social media visuals. Our engagement rates significantly increased!" - Sarah Chen, Marketing Manager'
+            },
+            'project2': {
+                title: 'InnovateTech Digital Ads',
+                client: 'InnovateTech Solutions',
+                description: 'Developed a series of high-converting digital advertisements for a new software launch. Designs were optimized for Google Ads, LinkedIn, and banner placements, focusing on clear calls to action and compelling visuals to drive clicks and conversions. The campaign successfully increased lead generation by 25% within the first month.',
+                visuals: [
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Ad+Mockup+1',
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Ad+Mockup+2'
+                ],
+                process: 'Started with A/B testing different visual concepts and headlines. Utilized data from previous campaigns to inform design choices, ensuring maximum impact. Created multiple variations for different audience segments.',
+                testimonial: '"Our recent digital campaign saw a remarkable improvement in CTR, thanks to the captivating ad designs by Muhammad Asif. Exceptional work!" - David Lee, Head of Digital Marketing'
+            },
+            'project3': {
+                title: 'Future Scholars Infographics',
+                client: 'Global Education Foundation',
+                description: 'Designed a comprehensive set of educational infographics to simplify complex scientific concepts for high school students. The goal was to make learning engaging and visually accessible, using clear data visualization and illustrative elements. These infographics were integrated into online learning modules and received positive feedback from both students and educators.',
+                visuals: [
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Infographic+1',
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Infographic+2'
+                ],
+                process: 'Collaborated closely with subject matter experts to ensure accuracy. Developed a consistent visual language across all infographics, using a friendly and approachable aesthetic. Focused on flow and hierarchy to guide the viewer\'s eye through information.',
+                testimonial: '"The infographics created by Muhammad Asif have been incredibly popular with our students. They make learning fun and easy to understand!" - Dr. Anya Sharma, Program Director\'s'
+            },
+            'project4': {
+                title: 'Synergy App UI/UX',
+                client: 'Synergy Innovations',
+                description: 'Led the UI/UX design for a new productivity mobile application, focusing on intuitive navigation, a clean aesthetic, and seamless user flows. Developed wireframes, prototypes, and a complete design system. The app achieved a 4.8-star rating on app stores due to its user-friendly interface.',
+                visuals: [
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=App+Screen+1',
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=App+Screen+2'
+                ],
+                process: 'Conducted user research and created user personas. Developed low-fidelity wireframes, then high-fidelity mockups. Performed usability testing to refine the interface and ensure optimal user experience.',
+                testimonial: '"Muhammad Asif\'s UI/UX expertise was invaluable for our app. The interface is beautiful and incredibly easy to use, exactly what we aimed for." - Mark Johnson, CTO'
+            },
+            'project5': {
+                title: 'Cafe Blossom Brand Refresh',
+                client: 'Cafe Blossom',
+                description: 'Revitalized the brand identity for a local cafe, including a new logo, color palette, typography, and social media templates. The aim was to create a fresh, inviting, and modern look that appealed to a broader audience. This refresh led to a noticeable increase in foot traffic and positive customer feedback.',
+                visuals: [
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Cafe+Logo+Mockup',
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Cafe+Social+Template'
+                ],
+                process: 'Began with a deep dive into the cafe\'s values and target demographic. Explored various logo concepts, focusing on scalability and versatility. Developed a comprehensive brand guide to ensure consistency across all touchpoints.',
+                testimonial: '"Our customers love the new look! Muhammad Asif perfectly captured the essence of our cafe in the new branding. Highly creative and professional." - Maria Garcia, Cafe Owner\'s'
+            },
+            'project6': {
+                title: 'EcoWear E-commerce Campaign',
+                client: 'EcoWear Apparel',
+                description: 'Designed a series of digital marketing assets for an eco-friendly apparel brand\'s e-commerce launch. This included website banners, email marketing graphics, and promotional social media ads, all emphasizing sustainability and style. The campaign contributed to a successful product launch, exceeding initial sales targets by 15%.',
+                visuals: [
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Ecomm+Banner',
+                    'https://placehold.co/600x400/D1D5DB/4B5563?text=Email+Graphic'
+                ],
+                process: 'Researched sustainable fashion trends and competitor marketing strategies. Created a cohesive visual narrative across all assets, highlighting the brand\'s commitment to ethical production and environmental responsibility.',
+                testimonial: '"The marketing materials were fantastic! Muhammad Asif helped us launch our e-commerce store with a strong visual identity that truly resonated with our target audience." - Alex Kim, Founder of EcoWear'
+            }
+        };
+
+        function showProjectDetails(projectId) {
+            const project = projectData[projectId];
+            if (project) {
+                projectTitle.innerText = project.title;
+                projectClient.innerText = `Client: ${project.client}`;
+                projectDescription.innerText = project.description;
+
+                projectVisuals.innerHTML = ''; // Clear previous visuals
+                project.visuals.forEach(src => {
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = project.title;
+                    img.classList.add('w-full', 'h-auto', 'rounded-lg', 'shadow-md');
+                    projectVisuals.appendChild(img);
+                });
+
+                if (project.process) {
+                    projectProcess.style.display = 'block';
+                    processContent.innerText = project.process;
+                } else {
+                    projectProcess.style.display = 'none';
+                }
+
+                if (project.testimonial) {
+                    projectTestimonials.style.display = 'block';
+                    testimonialContent.innerText = project.testimonial;
+                } else {
+                    projectTestimonials.style.display = 'none';
+                }
+
+                projectDetailModal.style.display = 'flex';
+            }
+        }
+
+        function closeProjectDetails() {
+            projectDetailModal.style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (event) => {
+            if (event.target == projectDetailModal) {
+                closeProjectDetails();
+            }
+            if (event.target == customModal) {
+                closeModal();
+            }
+        });
+
+        // Testimonial carousel logic
+        let currentTestimonialIndex = 0;
+        const testimonials = document.querySelectorAll('.testimonial-item');
+        const totalTestimonials = testimonials.length;
+
+        function showTestimonial(index) {
+            testimonials.forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function nextTestimonial() {
+            currentTestimonialIndex = (currentTestimonialIndex + 1) % totalTestimonials;
+            showTestimonial(currentTestimonialIndex);
+        }
+
+        // Auto-advance testimonials every 5 seconds
+        setInterval(nextTestimonial, 5000);
+
+        // Initial display of the first testimonial
+        showTestimonial(currentTestimonialIndex);
+
+        // Contact Form Submission (dummy)
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent actual form submission
+            showModal('Thank you for your message! I will get back to you shortly.');
+            this.reset(); // Clear the form fields
+        });
+
+    </script>
+</body>
+</html>
